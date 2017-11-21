@@ -1,0 +1,10 @@
+{
+  "name": "SmaugToken",
+  "version": "1.0.0",
+  "description": "ERC20 token for the hoard",
+  "author": "Stoyan Dimitrov",
+  "license": "MIT",
+  "dependencies": {
+    "zeppelin-solidity": "*"
+  }
+}
