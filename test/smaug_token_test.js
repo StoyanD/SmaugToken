@@ -21,6 +21,61 @@ contract('SmaugToken', function(accounts){
   });
 
   it("should only allow owner to call forcibly transfer token balances", async function(){
+    let owner = await instance.owner();
 
+    //test wrong user attempting to transfer
+    try{
+        await instance.adminTransfer(owner, accounts[1], 1000000, {from: accounts[2]});
+        assert.fail('should have thrown before');
+    }catch(error){
+      //shouldn't be able to call transfer if not owner
+      assertJump(error);
+    }
+
+    //test invalid account to transfer
+    try{
+        await instance.adminTransfer(owner, '0x0', 1000000, {from: owner});
+        assert.fail('should have thrown before');
+    }catch(error){
+      //shouldn't be able to transfer to empty address
+      assertJump(error);
+    }
+
+    //test not enough funds in account to make transfer
+    let ownerTokens = await instance.balanceOf(owner);
+    try{
+        await instance.adminTransfer(owner, accounts[1], ownerTokens*2, {from: owner});
+        assert.fail('should have thrown before');
+    }catch(error){
+      //shouldn't be able to transfer more than they have
+      assertJump(error);
+    }
+
+    //test correct transfer from owner
+    let a1Tokens = await instance.balanceOf(accounts[1]);
+    assert.equal(a1Tokens.valueOf(), 0, "initial account 1 tokens should be 0");
+
+    let res = await instance.adminTransfer.call(owner, accounts[1], 1000, {from: owner});
+    assert.equal(res.valueOf(), true, "transaction should return true and be successful");
+    await instance.adminTransfer(owner, accounts[1], 1000, {from: owner});
+
+    a1Tokens = await instance.balanceOf(accounts[1]);
+    assert.equal(a1Tokens.valueOf(), 1000, "new account 1 tokens should be 1000");
+
+    //test correct transfer by owner of someone elses funds
+    await instance.adminTransfer(accounts[1], accounts[2], 1000, {from: owner});
+    let a2Tokens = await instance.balanceOf(accounts[2]);
+    assert.equal(a2Tokens.valueOf(), 1000, "account 2 tokens should be 1000");
+    a1Tokens = await instance.balanceOf(accounts[1]);
+    assert.equal(a1Tokens.valueOf(), 0, "new account 1 tokens should be 0");
+
+    //test not enough funds to transfer against
+    try{
+        await instance.adminTransfer(accounts[2], accounts[1], 1001, {from: owner});
+        assert.fail('should have thrown before');
+    }catch(error){
+      //shouldn't be able to transfer more than they have
+      assertJump(error);
+    }
   });
 });//end contract tests
