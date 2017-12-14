@@ -23,20 +23,20 @@ contract HoardNodes is Ownable{
       return nodeList.length;
     }
 
-    function newNode(address nodeAddress, uint nodeData) public returns(bool success) {
+    function newNode(address nodeAddress, uint nodeData) public onlyOwner returns(bool success) {
       if(isNode(nodeAddress)) revert();
       nodeStructs[nodeAddress].nodeData = nodeData;
       nodeStructs[nodeAddress].listPointer = nodeList.push(nodeAddress) - 1;
       return true;
     }
 
-    function updateNode(address nodeAddress, uint nodeData) public returns(bool success) {
+    function updateNode(address nodeAddress, uint nodeData) public onlyOwner returns(bool success) {
       if(!isNode(nodeAddress)) revert();
       nodeStructs[nodeAddress].nodeData = nodeData;
       return true;
     }
 
-    function deleteNode(address nodeAddress) public returns(bool success) {
+    function deleteNode(address nodeAddress) public onlyOwner returns(bool success) {
       if(!isNode(nodeAddress)) revert();
       uint rowToDelete = nodeStructs[nodeAddress].listPointer;
       address keyToMove   = nodeList[nodeList.length-1];
