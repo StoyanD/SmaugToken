@@ -19,6 +19,11 @@ contract SmaugToken is StandardToken, Ownable{
     _;
   }
 
+  modifier isHoardNode(address _address){
+    require(hoardNodes.isNode(_address));
+    _;
+  }
+
   /**
    * @dev Constructor that gives msg.sender all of existing tokens.
    */
@@ -37,13 +42,13 @@ contract SmaugToken is StandardToken, Ownable{
     return true;
   }
 
-  function createVoteTransfer(address _from, address _to, uint256 _value) public validAddress(_from) validAddress(_to) returns (address) {
+  function createVoteTransfer(address _from, address _to, uint256 _value) public validAddress(_from) validAddress(_to) isHoardNode(msg.sender) returns (address) {
     /*TransferVote tv = new TransferVote(200);*/
     /*transferContracts[someFunc(_from, _to)](tv);*/
     return address(0);
   }
 
-  function voteTransfer(address _from, address _to, uint256 _value) public validAddress(_from) validAddress(_to) returns (bool) {
+  function voteTransfer(address _from, address _to, uint256 _value) public validAddress(_from) validAddress(_to) isHoardNode(msg.sender) returns (bool) {
 
   }
 

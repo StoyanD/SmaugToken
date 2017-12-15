@@ -3,7 +3,8 @@ pragma solidity ^0.4.18;
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 contract HoardNodes is Ownable{
-  struct NodeStruct {
+    //https://ethereum.stackexchange.com/questions/13167/are-there-well-solved-and-simple-storage-patterns-for-solidity
+    struct NodeStruct {
       uint nodeData;
       uint listPointer;
     }
@@ -21,6 +22,11 @@ contract HoardNodes is Ownable{
 
     function getNodeCount() public constant returns(uint nodeCount) {
       return nodeList.length;
+    }
+
+    function getNodeData(address nodeAddress) public constant returns(uint nodeData) {
+      if(!isNode(nodeAddress)) revert();
+      return nodeStructs[nodeAddress].nodeData;
     }
 
     function newNode(address nodeAddress, uint nodeData) public onlyOwner returns(bool success) {
