@@ -20,6 +20,10 @@ contract HoardNodes is Ownable{
       return (nodeList[nodeStructs[nodeAddress].listPointer] == nodeAddress);
     }
 
+    function getNodeAddressAt(uint position) public constant returns(address nodeAddress){
+      return nodeList[position];
+    }
+
     function getNodeCount() public constant returns(uint nodeCount) {
       return nodeList.length;
     }
