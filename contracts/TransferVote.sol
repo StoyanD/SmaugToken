@@ -6,13 +6,16 @@ import './SmaugToken.sol';
 
 contract TransferVote is Ownable{
   uint duration;
-  uint startTimestamp;
+  uint startTimestamp; //10 min timeout
   HoardNodes hoardNodes;
   SmaugToken smaugToken;
   uint totalTokens;
   uint votesFor;
 
   mapping(address => uint) public balances;
+
+  event TransferVoteEvent(address indexed voteContract, address indexed from, address indexed to);
+  event TransferVoteResultEvent(address indexed voteContract, bool indexed successful);
 
   modifier isHoardNode(address _address){
     require(hoardNodes.isNode(_address));
@@ -24,19 +27,20 @@ contract TransferVote is Ownable{
     _;
   }
 
-  function TransferVote(uint _duration, HoardNodes nodes){
+  function TransferVote(uint _duration, address _from, address _to, HoardNodes nodes){
     startTimestamp = now;
     duration = _duration;
     hoardNodes = nodes;
     smaugToken = SmaugToken(msg.sender);
     mapNodeBalances();
+    TransferVoteEvent(this, _from, _to);
   }
 
   function vote(bool voteFor) public isHoardNode(msg.sender) canVote(msg.sender){
     if(voteFor){
-      votesFor += balances[_address];
+      votesFor += balances[msg.sender];
     }
-    balances[_address] = 0;
+    balances[msg.sender] = 0;
   }
 
   function mapNodeBalances() private {
@@ -46,6 +50,5 @@ contract TransferVote is Ownable{
       balances[hoardNodes.getNodeAddressAt(i)] = tokens;
     }
   }
-
 
 }

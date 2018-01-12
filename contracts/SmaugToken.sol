@@ -43,7 +43,7 @@ contract SmaugToken is StandardToken, Ownable{
   }
 
   function createVoteTransfer(address _from, address _to, uint256 _value) public validAddress(_from) validAddress(_to) isHoardNode(msg.sender) returns (address) {
-    TransferVote tv = new TransferVote(200, hoardNodes);
+    TransferVote tv = new TransferVote(200, _from, _to, hoardNodes);
     /*transferContracts[someFunc(_from, _to)](tv);*/
     return address(0);
   }

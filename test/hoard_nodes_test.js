@@ -67,7 +67,7 @@ contract('HoardNodes', function(accounts){
           await instance.updateNode(emptyAddress, 5);
           assert.fail('should have thrown before');
       }catch(error){
-        //shouldn't be able to create new node if not owner
+        //shouldn't be able to update non-existant node
         assertJump(error);
       }
     });
@@ -93,7 +93,7 @@ contract('HoardNodes', function(accounts){
           await instance.deleteNode(emptyAddress);
           assert.fail('should have thrown before');
       }catch(error){
-        //shouldn't be able to create new node if not owner
+        //shouldn't be able to delete non-existant node
         assertJump(error);
       }
     });
